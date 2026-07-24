@@ -1,12 +1,10 @@
-# Placeholder F5-TTS config. This file is REGENERATED automatically on every
-# run by app.py (run_f5tts) with the correct absolute paths for your system,
-# so you never need to edit it by hand.
 model = "F5TTS_Base"
-ref_audio = ""
-ref_text = ""
+ref_audio = "F:\\Izhan Internship\\yqx267n9na-1784562650138\\temp\\trimmed_ref_gen.wav"
+ref_text = "Sometimes characters completely lose their mind for no good reason, but what happens when they're 100% justified?"
 speed = 1.0
 nfe_step = 16
-gen_text = ""
-output_file = "output_cloned.wav"
+gen_text = "Yes, and the voices stitch together smoothly."
+output_dir = "F:\\Izhan Internship\\yqx267n9na-1784562650138"
+output_file = "podcast_line_1.wav"
 
 [voices]

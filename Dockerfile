@@ -32,9 +32,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 # Install CPU PyTorch first so pip does not pull the large CUDA wheels.
-# This keeps the image portable (no GPU runtime needed). See DOCKER.md for GPU.
+# Pinned to 2.5.1: newer torchaudio (2.8+) drops its native audio backends in
+# favour of 'torchcodec', which fails to load its shared library and breaks
+# F5-TTS. 2.5.1 keeps the soundfile backend and satisfies transformers + f5-tts.
+# For GPU, swap the index URL (see DOCKER.md).
 RUN pip install --upgrade pip && \
-    pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+    pip install torch==2.5.1 torchaudio==2.5.1 --index-url https://download.pytorch.org/whl/cpu
 
 # Install the remaining Python dependencies (cached unless requirements change).
 COPY requirements.txt .

@@ -1,6 +1,8 @@
 # ─── Zenvyrolabs Voice Studio — Python dependencies ───
-# NOTE: torch + torchaudio are installed SEPARATELY (Dockerfile / setup.bat)
-# so the correct CPU or CUDA build is chosen. Do not pin them here.
+# NOTE: torch + torchaudio are installed SEPARATELY (Dockerfile / setup.bat),
+# PINNED to 2.5.1, so the correct CPU/CUDA build is chosen AND we avoid the
+# torchaudio>=2.8 "torchcodec" backend that fails to load on Windows and breaks
+# F5-TTS. Do not add torch/torchaudio here.
 
 # Web UI
 gradio>=4.44
