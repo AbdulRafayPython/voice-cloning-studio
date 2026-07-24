@@ -1,0 +1,70 @@
+# ══════════════════════════════════════════════════════════════════════
+#  Zenvyrolabs Voice Studio — .gitignore
+#  Keeps the repo to just SOURCE + DOCS. Everything below is machine-specific,
+#  huge, or auto-generated and must NOT be committed.
+# ══════════════════════════════════════════════════════════════════════
+
+# ─── Virtual environments (HUGE ~2GB, machine-specific absolute paths) ───
+venv/
+rvc_venv/
+env/
+.venv/
+ENV/
+
+# ─── Python bytecode / build ───
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# ─── AI model caches (re-downloaded automatically on first run) ───
+hf_cache/
+.cache/
+rvc_models/.cache/
+
+# ─── Runtime scratch / temp ───
+temp/
+tmp/
+
+# ─── Generated audio outputs (created every run) ───
+output_cloned.wav
+dramatic_clone.wav
+podcast_output.wav
+rvc_output.wav
+edited_audio.wav
+replacement.wav
+infer_cli_*.wav
+podcast_line_*.wav
+
+# ─── Preprocessed ML datasets (regenerated from Training Studio) ───
+training_data/
+
+# ─── Local logs ───
+*_log.txt
+install_log.txt
+docker_install_log.txt
+launch_test_log.txt
+
+# ─── OS / editor cruft ───
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+
+# ─── Large model weights: uncomment if you don't want them in git ───
+# (the included .pth/.index are tiny placeholders; real trained models are big —
+#  use Git LFS or keep them out of the repo)
+# *.pth
+# *.index
+
+# ─── Keep these tracked on purpose (sample voices + assets are small/useful) ───
+!saved_voices/
+!assets/

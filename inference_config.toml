@@ -1,0 +1,12 @@
+# Placeholder F5-TTS config. This file is REGENERATED automatically on every
+# run by app.py (run_f5tts) with the correct absolute paths for your system,
+# so you never need to edit it by hand.
+model = "F5TTS_Base"
+ref_audio = ""
+ref_text = ""
+speed = 1.0
+nfe_step = 16
+gen_text = ""
+output_file = "output_cloned.wav"
+
+[voices]

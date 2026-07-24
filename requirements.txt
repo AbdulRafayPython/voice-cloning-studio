@@ -1,0 +1,24 @@
+# ─── Zenvyrolabs Voice Studio — Python dependencies ───
+# NOTE: torch + torchaudio are installed SEPARATELY (Dockerfile / setup.bat)
+# so the correct CPU or CUDA build is chosen. Do not pin them here.
+
+# Web UI
+gradio>=4.44
+
+# Text-to-speech engines
+f5-tts               # provides the `f5-tts_infer-cli` command (voice cloning)
+edge-tts             # Microsoft Neural voices (perfect Hindi/Urdu pronunciation)
+
+# Audio processing
+pydub                # chunking, silence detection, stitching
+soundfile            # reading/writing wav
+numpy
+scipy
+noisereduce          # Task 3: background noise / static filter
+
+# ML / analysis
+transformers         # Whisper transcription + encoder embeddings
+
+# Config + misc
+tomli-w              # writes inference_config.toml for the F5-TTS CLI
+yt-dlp               # optional: download character audio for Task 4

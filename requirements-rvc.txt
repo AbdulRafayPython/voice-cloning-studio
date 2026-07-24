@@ -1,0 +1,9 @@
+# ─── OPTIONAL: Voice-to-Voice (RVC) backend ───
+# RVC (fairseq-based) has heavy, conflict-prone dependencies, so it is NOT
+# installed in the default image. The app works fully without it — Hindi/Urdu
+# lines simply fall back to the perfectly-pronounced Microsoft Neural base
+# instead of being morphed into the anime timbre.
+#
+# To enable RVC, build with the `rvc` stage (see DOCKER.md) or, locally,
+# create the separate `rvc_venv` and:  pip install -r requirements-rvc.txt
+rvc-python

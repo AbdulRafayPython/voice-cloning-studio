@@ -1,0 +1,37 @@
+# ─────────────────────────────────────────────────────────────────────────
+# Zenvyrolabs Voice Studio — run the whole app with ONE command:
+#     docker compose up --build
+# then open http://localhost:7860 in your browser.
+#
+# The `volumes:` below are the key to persistence: saved voices, RVC models,
+# training datasets and the (large) model cache live on the host, so they
+# SURVIVE container restarts / rebuilds and are never lost.
+# ─────────────────────────────────────────────────────────────────────────
+services:
+  voice-studio:
+    build: .
+    image: zenvyro-voice-studio:latest
+    container_name: zenvyro-voice-studio
+    ports:
+      - "7860:7860"
+    environment:
+      - IN_DOCKER=1
+      - GRADIO_SERVER_NAME=0.0.0.0
+      - GRADIO_SERVER_PORT=7860
+    volumes:
+      - ./saved_voices:/app/saved_voices     # cloned voice library (persists)
+      - ./rvc_models:/app/rvc_models         # optional RVC .pth/.index models
+      - ./training_data:/app/training_data   # preprocessed ML datasets
+      - ./hf_cache:/app/hf_cache             # Whisper / F5-TTS model downloads
+    restart: unless-stopped
+
+    # ── GPU (optional) ──────────────────────────────────────────────────
+    # For NVIDIA acceleration: install the NVIDIA Container Toolkit, build a
+    # CUDA image (see DOCKER.md), then uncomment the block below.
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: all
+    #           capabilities: [gpu]

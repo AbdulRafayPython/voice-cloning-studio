@@ -1,0 +1,33 @@
+# Local virtual environments (image installs its own deps)
+venv/
+rvc_venv/
+
+# Caches & scratch (regenerated at runtime; persisted via volumes)
+hf_cache/
+temp/
+__pycache__/
+*.pyc
+*.pyo
+
+# Version control / editor
+.git/
+.gitignore
+.vscode/
+.idea/
+
+# Generated audio outputs at the project root
+output_cloned.wav
+dramatic_clone.wav
+podcast_output.wav
+rvc_output.wav
+edited_audio.wav
+replacement.wav
+infer_cli_*.wav
+podcast_line_*.wav
+
+# Preprocessed datasets (large; recreated on demand)
+training_data/
+
+# Docs that don't belong in the image
+*.md
+demo.html
