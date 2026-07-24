@@ -275,11 +275,10 @@ def generate_hindi(text, voice_id, use_transliteration, speed, pitch, progress=g
     final_text = text
 
     if use_transliteration:
-        if contains_devanagari(text):
-            status.append("Text already in Devanagari.")
-        else:
-            final_text = roman_to_devanagari(text)
-            status.append(f"🔄 Transliterated to: {final_text}")
+        final_text, note = _script_for_voice(text, voice_id)
+        if note is None:  # Roman -> Devanagari for a Hindi voice
+            note = f"🔄 Transliterated to: {final_text}"
+        status.append(note)
 
     output_path = os.path.join(TEMP_DIR, "hindi_output.mp3")
 
@@ -289,7 +288,7 @@ def generate_hindi(text, voice_id, use_transliteration, speed, pitch, progress=g
     progress(0.5, desc="Generating voice...")
     ok, err = run_edge_tts(final_text, voice_id, output_path, rate=rate_arg, pitch=pitch_arg)
     if not ok:
-        return None, f"❌ Error: {err}"
+        return None, _friendly_edge_error(err)
 
     status.append("✅ Generated successfully!")
     progress(1.0)
@@ -370,6 +369,37 @@ def detect_language(text, mode="auto"):
 def _norm_key(s):
     """Normalize a name for matching: 'Iron Man' / 'iron-man' -> 'iron_man'."""
     return re.sub(r"[\s\-]+", "_", (s or "").strip()).lower()
+
+
+def _script_for_voice(text, voice_id):
+    """
+    Put text in the script the chosen Microsoft Neural voice can actually read.
+
+    Hindi (hi-*) voices read Devanagari best, so Roman is transliterated.
+    Urdu (ur-*) voices CANNOT read Devanagari (they use Nastaliq/Arabic script)
+    and Microsoft returns *no audio* for Devanagari input — so Urdu voices are
+    fed the Roman text, which they pronounce fine. Returns (final_text, note).
+    """
+    is_urdu = str(voice_id).startswith("ur-")
+    if contains_devanagari(text):
+        if is_urdu:
+            return text, ("⚠️ Urdu voices can't read Devanagari — please type in Roman "
+                          "(e.g. 'kya haal hai') for Urdu voices.")
+        return text, "Text already in Devanagari."
+    if is_urdu:
+        return text, "🔤 Urdu voice: using Roman text (Urdu voices don't support Devanagari)."
+    return roman_to_devanagari(text), None  # note filled in by caller with the result
+
+
+def _friendly_edge_error(err):
+    """Turn a raw edge-tts traceback into a one-line, user-friendly message."""
+    e = err or ""
+    if "NoAudioReceived" in e:
+        return ("❌ The voice returned no audio. Usually the text and the voice's "
+                "language don't match (e.g. an Urdu voice with Devanagari text). "
+                "Try Roman text, or switch to a Hindi voice.")
+    last = e.strip().splitlines()[-1] if e.strip() else "unknown error"
+    return f"❌ Error: {last}"
 
 
 # ─── Tab 4: Multi-Voice Podcast (Task 2: crash-proof + perfect pronunciation) ───
@@ -468,11 +498,13 @@ def _gen_hindi_line(dialogue, rvc_model, hindi_voice, idx):
          base (still perfect pronunciation) so the app never crashes.
     Returns (path, note).
     """
-    text = dialogue if contains_devanagari(dialogue) else roman_to_devanagari(dialogue)
+    # Put the line in the script the chosen neural voice can read
+    # (Devanagari for Hindi voices, Roman for Urdu voices).
+    text, _ = _script_for_voice(dialogue, hindi_voice)
     base_path = os.path.join(TEMP_DIR, f"pod_hi_base_{idx}.mp3")
     ok, err = run_edge_tts(text, hindi_voice, base_path)
     if not ok:
-        return None, f"Neural base (edge-tts) failed: {err}"
+        return None, _friendly_edge_error(err).replace("❌ ", "")
 
     if rvc_model:
         rvc_out, rvc_log = run_rvc_conversion(base_path, rvc_model, 0)
